@@ -1,0 +1,188 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport"
+              content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0,
+              minimum-scale=1.0">
+        <script src="https://cdn.staticfile.org/react/16.4.0/umd/react.development.js"></script>
+        <script src="https://cdn.staticfile.org/react-dom/16.4.0/umd/react-dom.development.js"></script>
+        <script src="https://cdn.staticfile.org/babel-standalone/6.26.0/babel.min.js"></script>
+        <title>pic</title>
+        <style>
+            * {
+                padding: 0;
+                margin: 0;
+            }
+
+            img {
+                display: block;
+            }
+
+            .all {
+                display: flex;
+            }
+
+            .item {
+                position: relative;
+            }
+
+            .item .albe {
+                width: 30px;
+                height: 20px;
+                position: absolute;
+                left: 2px;
+                top: 2px;
+            }
+
+            .css-checkbox {
+                display: none;
+            }
+
+            .css-span {
+                display: inline-block;
+                width: 15px;
+                height: 20px;
+                font-size: 14px;
+                color: #666;
+                font-weight: bold;
+                padding-left: 30px;
+                position: relative;
+            }
+
+            .css-span::before {
+                content: "";
+                width: 12px;
+                height: 12px;
+                border: 2px solid #666;
+                position: absolute;
+                top: 0;
+                bottom: 0;
+                left: 10px;
+                margin: auto;
+                z-index: 0;
+                border-radius: 5px;
+            }
+
+            .css-span::after {
+                content: "";
+                width: 6px;
+                height: 10px;
+                position: absolute;
+                top: 0;
+                bottom: 0;
+                left: 12px;
+                margin: auto;
+                z-index: 1;
+                transform: rotateZ(40deg) translate(1px, -2px);
+                opacity: 0;
+            }
+
+            .css-checkbox:checked + span::before {
+                background-color: red;
+            }
+
+            .css-checkbox:checked + span::after {
+                opacity: 1;
+            }
+
+        </style>
+    </head>
+    <body>
+        <div id="box"></div>
+
+        <script type="text/babel">
+
+            function APP(props) {
+                return (
+                    <div className="item">
+                        {props.children}
+                        <img src={props.url} />
+                    </div>
+                );
+            }
+
+
+            class MyPicCon extends React.Component {
+
+                constructor(props) {
+                    super(props);
+                    this.state = {
+                        checks: [false, false, false],
+                        datalist: [
+                            {
+                                id: '1',
+                                name: 'foo',
+                                url: 'https://gw.alipayobjects.com/mdn/rms_d212b7/afts/img/A*LlfeSa8N0WgAAAAAAAAAAABkARQnAQ'
+                            },
+                            {
+                                id: '2',
+                                name: 'foo',
+                                url: 'https://gw.alipayobjects.com/mdn/rms_d212b7/afts/img/A*LlfeSa8N0WgAAAAAAAAAAABkARQnAQ'
+                            },
+                            {
+                                id: '3',
+                                name: 'foo',
+                                url: 'https://gw.alipayobjects.com/mdn/rms_d212b7/afts/img/A*LlfeSa8N0WgAAAAAAAAAAABkARQnAQ'
+                            }
+                        ]
+                    }
+                }
+
+                render() {
+                    return (
+                        <div>
+                            <label className="albe">
+                                <input type="checkbox" className="css-checkbox" ref="myAllCheck"
+                                       checked={this.state.checks.every((item) => item)?"checked":""}
+                                    onChange={this.handleAllChange.bind(this)} />
+                                <span className="css-span"></span>
+                            </label>
+
+                            <div className="all">
+                                {
+                                    this.state.datalist.map((item, index) => {
+                                        return <APP url={item.url} key={item.id}>
+                                            <label className="albe">
+                                                <input type="checkbox" className={`css-checkbox ${index}`}
+                                                       checked={this.state.checks[index]?"checked":""}
+                                                        onChange={(e) => {this.handleItemChange(e)}} />
+                                                <span className="css-span"></span>
+                                            </label>
+                                        </APP>
+                                    })
+                                }
+                            </div>
+
+                        </div>
+
+                    );
+                }
+
+                handleAllChange() {
+                    let newChecks = this.state.checks;
+
+                    newChecks.fill(this.refs.myAllCheck.checked);
+                    this.setState({
+                        checks: newChecks
+                    });
+                }
+
+                handleItemChange = (event) => {
+                    let target = event.target.className.substr(-1);
+                    let newChecks = this.state.checks;
+                    console.log(event.target.className.substr(-1))
+                    newChecks[target] = event.target.checked;
+                    this.setState({
+                        checks: newChecks
+                    });
+                }
+
+            }
+
+
+            ReactDOM.render(<MyPicCon />, document.getElementById("box"));
+
+        </script>
+    </body>
+</html>
